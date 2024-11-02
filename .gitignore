@@ -19,3 +19,8 @@ buildNumber.properties
 # IDEA
 .idea/
 *.iml
+
+# macos
+**/.DS_Store
+
+**/rebel.xml
