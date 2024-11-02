@@ -17,7 +17,6 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
 
     @Autowired

@@ -48,7 +48,7 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
 
     public UserInfo(String username, String password, String name, String email,
                     Collection<? extends GrantedAuthority> authorities) {
-        Assert.isTrue(username != null && !"".equals(username) && password != null, "Cannot pass null or empty values to constructor");
+        Assert.isTrue(username != null && !username.isEmpty() && password != null, "Cannot pass null or empty values to constructor");
         this.username = username;
         this.password = password;
         this.name = name;
