@@ -4,10 +4,27 @@
       lang="en">
 <head>
     <title>Taco Cloud</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 
 <body>
-    <h1>Welcome to...</h1>
-    <img th:src="@{/images/TacoCloud.png}" alt="A picture about tacocloud"/>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@{/}">
+                <img th:src="@{/static/images/slogan.png}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                Voting
+            </a>
+
+            <form class="d-flex" method="post" th:action="@{/auth/logout}">
+                <button class="btn btn-info" type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
 </body>
+<script th:src="@{/static/js/bootstrap.js}"></script>
+<script th:src="@{/static/js/jquery-3.7.1.js}"></script>
 </html>

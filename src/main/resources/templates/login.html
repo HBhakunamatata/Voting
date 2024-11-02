@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
+</head>
+
+<body class="row justify-content-center">
+
+    <div class="center-box container w-25">
+        <div class="container my-2">
+            <a th:href="@{/}">
+                <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;"></i>
+            </a>
+        </div>
+
+        <div class="container mb-4">
+            <h1>Login</h1>
+        </div>
+
+        <div th:if="${error}">
+            Unable to login. Check your username and password.
+        </div>
+
+        <form method="post" th:action="@{/auth/login}" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="inputUsername" class="form-label">Username</label>
+                <input class="form-control" type="text" placeholder="Input your username" name="inputUsername" id="inputUsername" required>
+                <div class="invalid-feedback">
+                    Please input your username.
+                </div>
+
+            </div>
+            <div class="mb-4">
+                <label for="inputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPassword" placeholder="Input your password" name="inputPassword" required>
+                <div class="invalid-feedback">
+                    Please input your password.
+                </div>
+            </div>
+
+            <div class="mb-3 text-center">
+                <input type="submit" class="btn btn-primary mx-2" value="Login">
+                <a th:href="@{/}" class="btn btn-primary mx-2">Cancel</a>
+            </div>
+
+            <div class="mb-2 text-center">
+                <p style="display: inline-block">haven't <a th:href="@{/auth/register}">register</a> yet?</p>
+            </div>
+
+        </form>
+
+    </div>
+
+
+</body>
+<script th:src="@{/static/js/bootstrap.js}"></script>
+<script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script>
+
+    $(() => {
+        const form = document.querySelector('.needs-validation')
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })()
+
+</script>
+</html>

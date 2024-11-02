@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
+</head>
+
+<body class="row justify-content-center">
+
+    <div class="center-box container w-25">
+        <div class="container my-2">
+            <a th:href="@{/auth/login}">
+                <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;"></i>
+            </a>
+        </div>
+
+        <div class="container mb-4">
+            <h1>Register</h1>
+        </div>
+
+        <div th:if="${error}">
+            Unable to register. Check your form data.
+        </div>
+
+        <form method="post" th:action="@{/auth/register}" class="needs-validation" novalidate>
+            <div class="mb-2">
+                <label for="username" class="form-label">Username</label>
+                <input class="form-control" type="text" placeholder="Input your username" name="username" id="username" required minlength="5" maxlength="25">
+                <div class="invalid-feedback">
+                    Name must be 5-25 characters long.
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Input your password" name="password" required minlength="6" maxlength="20">
+                <div class="invalid-feedback">
+                    Password must be 6-20 characters long.
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Input your password again" name="confirmPassword" required
+                       oninput='confirmPassword.setCustomValidity(confirmPassword.value != password.value ? "Passwords do not match." : "")'>
+                <div class="invalid-feedback">
+                    Confirm password must be the same as above password.
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Input your Name" name="name" required minlength="1" maxlength="50">
+                <div class="invalid-feedback">
+                    Name must be 1-50 characters long.
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Input your Email" name="email" required pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$">
+                <div class="invalid-feedback">
+                    Email must follow the right pattern.
+                </div>
+            </div>
+
+            <div class="mb-3 text-center">
+                <input type="submit" class="btn btn-primary mx-2" value="Register">
+                <a th:href="@{/auth/login}" class="btn btn-primary mx-2">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+</body>
+<script th:src="@{/static/js/bootstrap.js}"></script>
+<script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script>
+
+    const form = document.querySelector('.needs-validation')
+    form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+    }, false)
+
+</script>
+</html>
