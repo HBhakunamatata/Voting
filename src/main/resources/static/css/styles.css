@@ -5,3 +5,7 @@
 
     border: 1px solid #5c636a;
 }
+
+ul {
+    list-style: none;
+}

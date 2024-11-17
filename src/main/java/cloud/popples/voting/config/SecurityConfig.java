@@ -15,7 +15,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
-                .antMatchers("/", "index", "home", "/users/**").authenticated()
+                .antMatchers("/", "index", "home", "/users/**", "/vote/**", "/votes").authenticated()
                 .anyRequest().permitAll()
 
                 .and()

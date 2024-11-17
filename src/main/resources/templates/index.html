@@ -6,25 +6,194 @@
     <title>Taco Cloud</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 
 <body>
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="@{/}">
-                <img th:src="@{/static/images/slogan.png}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                Voting
-            </a>
+    <header>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid align-items-center">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/static/images/slogan.png}" alt="Logo" width="33" height="33" class="d-inline-block align-text-top">
+                    Voting
+                </a>
 
-            <form class="d-flex" method="post" th:action="@{/auth/logout}">
-                <button class="btn btn-info" type="submit">Logout</button>
-            </form>
+                <form class="d-flex" method="post" th:action="@{/auth/logout}">
+                    <button class="btn btn-info" type="submit">Logout</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container-fluid clearfix">
+        <div class="row p-5 bg-warning bg-gradient bg-opacity-75 text-dark text-center">
+            <div class="col-md-3 col-sm-1"></div>
+            <div class="col-md-6 col-sm-10">
+                <div class="row m-md-2 my-sm-2">
+                    <h1>Voting System</h1>
+                </div>
+                <div class="row m-md-3 my-sm-2">
+                    <div class="input-group mb-md-3 mb-sm-1">
+                        <input id="input-query-words" type="text" class="form-control" placeholder="Search for ongoing votes" aria-label="Search for ongoing votes" aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="button" id="button-query-votes">Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-1"></div>
         </div>
-    </nav>
+
+        <div class="row">
+            <div class="col-md-3 col-sm-1"></div>
+            <div class="col-md-6 col-sm-1">
+                <div class="row" style="border-bottom: 0.1rem solid rgba(10,31,32,0.96)">
+                    <div class="col-md-1 m-2 p-1">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#initiateVote">
+                            Initiate
+                        </button>
+                    </div>
+                </div>
+
+                <div id="votes" class="row">
+                    <ul>
+                        <!-- Add Vote Data -->
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-1"></div>
+        </div>
+
+        <div id="pagination" class="row">
+            <ul class="pagination justify-content-center">
+
+            </ul>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="initiateVote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Creating Vote</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="createVoteForm">
+                        <div class="container modal-body" id="modal-body">
+                            <div class="mb-2">
+                                <label for="voteSubject" class="form-label">Vote Subject :</label>
+                                <input type="text" class="form-control" id="voteSubject" placeholder="Create a vote subject">
+                            </div>
+
+                            <div id="voteItems" class="mb-3">
+                                <p>Vote Items : </p>
+                                <div class="row mb-2">
+
+                                    <div class="col-1">
+                                        <label for="item-A" class="form-label pt-1">A.</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="item-A" placeholder="Create a vote item">
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn-close" disabled aria-label="Close"></button>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-1">
+                                        <label for="item-B" class="form-label pt-1">B.</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="item-B" placeholder="Create a vote item">
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn-close" disabled aria-label="Close"></button>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-1">
+                                        <label for="item-C" class="form-label pt-1">C.</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="item-C" placeholder="Create a vote item">
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn-close" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-4">
+                                    <label class="form-label pt-1">Vote EndTime : </label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="input-group">
+                                        <select id="hour" class="form-select" aria-label="Default select example">
+                                            <option value="0" selected>00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </select>
+                                        <span class="input-group-text">:</span>
+                                        <select id="minute" class="form-select" aria-label="Default select example">
+                                            <option selected value="0">00</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="30">30</option>
+                                            <option value="40">40</option>
+                                            <option value="50">50</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" id="btnAddItem" class="btn btn-outline-primary">Add items</button>
+                            <button type="submit" id="btnSubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container-fluid fixed-bottom bg-warning bg-gradient bg-opacity-100 text-dark">
+        <div class="row text-center">
+            <p>Created by hbhakunamatata</p>
+        </div>
+    </footer>
+
 </body>
 <script th:src="@{/static/js/bootstrap.js}"></script>
 <script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/static/js/moment.js}"></script>
+<script th:src="@{/static/js/index-page.js}"></script>
 </html>
