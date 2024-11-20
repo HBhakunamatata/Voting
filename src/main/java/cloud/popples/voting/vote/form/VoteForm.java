@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,28 +25,24 @@ public class VoteForm {
     private String voteSubject;
 
     @NotNull
-    @Size(min = 2)
+    @Size(min = 1)
     private List<VoteItemForm> voteItemForms;
 
     @NotNull
     @Future
-//    @DateTimeFormat(pattern = DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT, timezone = "GTM+8")
     private LocalDateTime endTime;
 
     public Vote toVote() {
         List<VoteItem> voteItems = this.voteItemForms.stream()
-                .map(i -> new VoteItem(i.getTag(), i.getContent()))
+                .map(itemForm -> new VoteItem(itemForm.getTag(), itemForm.getContent()))
                 .collect(Collectors.toList());
-
-        LocalDate today = LocalDate.now();
-        LocalTime startTime = LocalTime.now();
 
         Vote vote = Vote.builder()
                 .subject(this.voteSubject)
                 .voteItems(voteItems)
                 .status(VoteStatus.GOING)
-                .startTime(LocalDateTime.of(today, startTime))
+                .startTime(LocalDateTime.now())
                 .endTime(endTime)
                 .build();
 

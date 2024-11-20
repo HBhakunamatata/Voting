@@ -14,8 +14,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     Page<Vote> findBySubjectContainsIgnoreCase(String voteSubject, Pageable pageable);
 
-//    List<Vote> findByStatusNotAndEndTimeBetween(VoteStatus status, LocalDateTime start, LocalDateTime end);
-
     @Modifying
     @Query(value = "update Vote vote set vote.status = 2 where vote.status != ?1 and (vote.endTime between ?2 and ?3)")
     int updateStatusByEndTimeBetween(VoteStatus status, LocalDateTime start, LocalDateTime end);

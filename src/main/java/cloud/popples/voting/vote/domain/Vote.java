@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +17,7 @@ import static cloud.popples.voting.utils.DateTimeUtil.DEFAULT_DATETIME_FORMAT;
 @Entity
 @Table(name = "vote")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)

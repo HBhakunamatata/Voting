@@ -16,6 +16,10 @@ public class PageResult <T> implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    private final static int SUCCESS_CODE = 0;
+
+    private final static String SUCCESS_MSG = "success";
+
     private Integer code;
 
     private String message;
@@ -24,18 +28,17 @@ public class PageResult <T> implements Serializable {
 
     private Integer pageSize;
 
-    private Integer totalPage;
+    private Integer pageTotal;
 
     private Iterable<T> pageData;
 
-
     public static <T> PageResult<T> success(Page<T> page) {
         return PageResult.<T>builder()
-                .code(0)
-                .message("success")
+                .code(SUCCESS_CODE)
+                .message(SUCCESS_MSG)
                 .pageNo(page.getNumber() + 1)
                 .pageSize(page.getSize())
-                .totalPage(page.getTotalPages())
+                .pageTotal(page.getTotalPages())
                 .pageData(page.getContent())
                 .build();
     }

@@ -86,16 +86,11 @@
 </body>
 <script th:src="@{/static/js/bootstrap.js}"></script>
 <script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/static/js/common.js}"></script>
 <script>
-
-    const form = document.querySelector('.needs-validation')
-    form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-        }
-        form.classList.add('was-validated')
-    }, false)
+    $(function () {
+        checkFormSubmit()
+    })
 
 </script>
 </html>

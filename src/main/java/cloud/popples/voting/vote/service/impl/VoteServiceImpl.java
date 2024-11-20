@@ -32,6 +32,7 @@ public class VoteServiceImpl implements VoteService {
         this.resultRepository = resultRepository;
     }
 
+
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Vote saveVote(VoteForm voteForm) {
@@ -45,8 +46,8 @@ public class VoteServiceImpl implements VoteService {
         Sort sort = typedSort.by(Vote::getEndTime).descending()
                 .and(typedSort.by(Vote::getStatus).ascending());
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
-        Page<Vote> votes =
-                voteRepository.findBySubjectContainsIgnoreCase(queryWord, pageRequest);
+        Page<Vote> votes = voteRepository
+                .findBySubjectContainsIgnoreCase(queryWord, pageRequest);
         return votes;
     }
 

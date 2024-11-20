@@ -1,11 +1,12 @@
 package cloud.popples.voting.users.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 
@@ -14,12 +15,17 @@ import javax.persistence.*;
 @Table(name = "role")
 @Data
 @NoArgsConstructor(force = true)
-@AllArgsConstructor
 @SuperBuilder
 public class UserRole extends BaseAuthEntity implements GrantedAuthority {
 
     public UserRole(String role) {
         this(null, role);
+    }
+
+    public UserRole(Long id, String role) {
+        Assert.isTrue(StringUtils.isNotBlank(role), "Role cannot be blank");
+        this.id = id;
+        this.authority = role;
     }
 
     @Id

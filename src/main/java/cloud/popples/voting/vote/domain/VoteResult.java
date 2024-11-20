@@ -2,15 +2,18 @@ package cloud.popples.voting.vote.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "vote_result")
 public class VoteResult extends BaseVoteEntity {
@@ -19,12 +22,8 @@ public class VoteResult extends BaseVoteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@ManyToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "none", foreignKey = @ForeignKey(name="none", value = ConstraintMode.NO_CONSTRAINT))
     private Long voteId;
 
-    //@ManyToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "none", foreignKey = @ForeignKey(name="none", value = ConstraintMode.NO_CONSTRAINT))
     private Long itemId;
 
 }

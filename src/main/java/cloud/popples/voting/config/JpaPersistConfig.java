@@ -1,7 +1,6 @@
 package cloud.popples.voting.config;
 
 import cloud.popples.voting.users.domain.UserInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
@@ -17,9 +15,6 @@ import java.util.Optional;
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "cloud.popples.voting.**.repository")
 public class JpaPersistConfig implements AuditorAware<Long> {
-
-    @Autowired
-    private UserDetailsService userService;
 
     @Override
     public Optional<Long> getCurrentAuditor() {

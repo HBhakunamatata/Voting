@@ -22,8 +22,8 @@ public class SecurityConfig {
                 .formLogin()
                 .loginPage("/auth/login")
                 .defaultSuccessUrl("/")
-                .usernameParameter("inputUsername")
-                .passwordParameter("inputPassword")
+                .usernameParameter("username")
+                .passwordParameter("password")
 
                 .and()
                 .logout()

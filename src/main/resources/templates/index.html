@@ -6,11 +6,10 @@
     <title>Taco Cloud</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <meta name="_csrf" th:content="${_csrf.token}"/>
-    <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
+    <link rel="icon" th:href="@{/static/images/slogan.png}">
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/static/css/styles.css}">
@@ -195,5 +194,8 @@
 <script th:src="@{/static/js/bootstrap.js}"></script>
 <script th:src="@{/static/js/jquery-3.7.1.js}"></script>
 <script th:src="@{/static/js/moment.js}"></script>
+<script th:src="@{/static/js/common.js}"></script>
 <script th:src="@{/static/js/index-page.js}"></script>
+<script th:src="@{/static/js/vote-items.js}"></script>
+<script th:src="@{/static/js/pagination.js}"></script>
 </html>

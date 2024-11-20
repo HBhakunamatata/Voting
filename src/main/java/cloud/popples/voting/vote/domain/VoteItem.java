@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "vote_item")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @SuperBuilder
 public class VoteItem extends BaseVoteEntity implements Serializable {

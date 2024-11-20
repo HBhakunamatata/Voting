@@ -25,8 +25,8 @@ public class VoteSchedule {
     public void autoCloseTenMinutes() {
         log.debug("start autoCloseTenMinutes");
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime minusMinutes = now.minusMinutes(10L).withSecond(0).withNano(0);
-        int updated = voteService.updateOutdatedVotes(minusMinutes, now);
+        LocalDateTime tenMinutesAgo = now.minusMinutes(10L).withSecond(0).withNano(0);
+        int updated = voteService.updateOutdatedVotes(tenMinutesAgo, now);
         log.info("autoCloseTenMinutes updated: {}", updated);
         log.debug("end autoCloseTenMinutes");
     }
@@ -35,9 +35,9 @@ public class VoteSchedule {
     public void autoCloseToday() {
         log.debug("start autoCloseToday");
         LocalDate today = LocalDate.now();
-        LocalDateTime start = LocalDateTime.of(today, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(today, LocalTime.MAX);
-        int updated = voteService.updateOutdatedVotes(start, end);
+        LocalDateTime todayStart = LocalDateTime.of(today, LocalTime.MIN);
+        LocalDateTime todayEnd = LocalDateTime.of(today, LocalTime.MAX);
+        int updated = voteService.updateOutdatedVotes(todayStart, todayEnd);
         log.info("autoCloseToday updated: {}", updated);
         log.debug("end autoCloseToday");
     }

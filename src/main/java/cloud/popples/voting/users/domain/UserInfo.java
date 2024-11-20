@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
@@ -48,7 +49,7 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
 
     public UserInfo(String username, String password, String name, String email,
                     Collection<? extends GrantedAuthority> authorities) {
-        Assert.isTrue(username != null && !username.isEmpty() && password != null, "Cannot pass null or empty values to constructor");
+        Assert.isTrue(!StringUtils.isAnyBlank(username, password, name, email), "Cannot pass null or empty values to constructor");
         this.username = username;
         this.password = password;
         this.name = name;
@@ -96,12 +97,11 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
     }
 
     private static SortedSet<? extends GrantedAuthority> sortAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        Assert.notNull(authorities, "Cannot pass a null GrantedAuthority collection");
+        Assert.notEmpty(authorities, "Cannot pass an empty GrantedAuthority collection");
         SortedSet<GrantedAuthority> sortedAuthorities = new TreeSet<>(new AuthorityComparator());
         sortedAuthorities.addAll(authorities);
         return sortedAuthorities;
     }
-
 
     private static class AuthorityComparator implements Comparator<GrantedAuthority>, Serializable {
 
