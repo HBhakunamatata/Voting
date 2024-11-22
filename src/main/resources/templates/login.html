@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" th:href="@{/static/images/slogan.png}">
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/static/css/styles.css}">
@@ -29,16 +30,16 @@
 
             <form method="post" th:action="@{/auth/login}" class="needs-validation" novalidate>
                 <div class="mb-3">
-                    <label for="inputUsername" class="form-label">Username</label>
-                    <input class="form-control" type="text" placeholder="Input your username" name="inputUsername" id="inputUsername" required>
+                    <label for="username" class="form-label">Username</label>
+                    <input class="form-control" type="text" placeholder="Input your username" name="username" id="username" required>
                     <div class="invalid-feedback">
                         Please input your username.
                     </div>
 
                 </div>
-                <div class="mb-4">
-                    <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Input your password" name="inputPassword" required>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Input your password" name="password" required>
                     <div class="invalid-feedback">
                         Please input your password.
                     </div>
@@ -59,23 +60,14 @@
         <div class="col-sm-1 col-md-4">
         </div>
 
-
     </div>
 </body>
 <script th:src="@{/static/js/bootstrap.js}"></script>
 <script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/static/js/common.js}"></script>
 <script>
-
-    $(() => {
-        const form = document.querySelector('.needs-validation')
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-            form.classList.add('was-validated')
-        }, false)
-    })()
-
+    $(function () {
+        checkFormSubmit()
+    })
 </script>
 </html>

@@ -15,15 +15,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
-                .antMatchers("/", "index", "home", "/users/**").authenticated()
+                .antMatchers("/", "index", "home", "/users/**", "/vote/**", "/votes").authenticated()
                 .anyRequest().permitAll()
 
                 .and()
                 .formLogin()
                 .loginPage("/auth/login")
                 .defaultSuccessUrl("/")
-                .usernameParameter("inputUsername")
-                .passwordParameter("inputPassword")
+                .usernameParameter("username")
+                .passwordParameter("password")
 
                 .and()
                 .logout()

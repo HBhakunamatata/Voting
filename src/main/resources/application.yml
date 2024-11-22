@@ -12,3 +12,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/voting?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: Hb@85701729
+  jackson:
+    time-zone: GMT-8
+    date-format: "yyyy-MM-DD HH:mm:ss"

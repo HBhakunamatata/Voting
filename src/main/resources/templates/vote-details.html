@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <title>Taco Cloud</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <link rel="icon" th:href="@{/static/images/slogan.png}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
+</head>
+
+<body>
+<header style="max-height: 10vh">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid align-items-center">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/static/images/slogan.png}" alt="Logo" width="33" height="33" class="d-inline-block align-text-top">
+                Voting
+            </a>
+
+            <form class="d-flex" method="post" th:action="@{/auth/logout}">
+                <button class="btn btn-info" type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <div id="countTime" class="row text-center">
+        <p><time th:datetime="${#temporals.format(voteData.endTime, 'yyyy-MM-dd HH:mm:ss')}">Left Time : XX:XX:XX</time></p>
+    </div>
+    <div class="row align-items-center" style="height: 75vh">
+        <form id="vote-info" class="col-md-6 col-sm-12 bg-warning-subtle">
+            <div class="row text-center pt-5 pb-4">
+                <h2 id="voteSubject" th:text="${voteData.subject}" th:data="${voteData.id}"></h2>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div id="voteData" class="col-8">
+                    <div class="form-check py-1" th:each="voteItem : ${voteData.voteItems}">
+                        <input class="form-check-input h5" type="checkbox" id="flexCheckDefault" th:value="${voteItem.itemId}">
+                        <label class="form-check-label h5" for="flexCheckDefault" th:text="${voteItem.tag} + '. ' + ${voteItem.content}"></label>
+                    </div>
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <div class="text-center pt-3 pb-5">
+                <button id="voteResultBtn" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+        <div id="vote-chart" class="col-md-6 col-sm-12" style="height: 400px;"></div>
+    </div>
+
+</main>
+
+<footer class="container-fluid fixed-bottom bg-warning bg-gradient bg-opacity-100 text-dark" style="max-height: 10vh">
+    <div class="row text-center">
+        <p>Created by hbhakunamatata</p>
+    </div>
+</footer>
+
+</body>
+<script th:src="@{/static/js/bootstrap.js}"></script>
+<script th:src="@{/static/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/static/js/moment.js}"></script>
+<script th:src="@{/static/js/common.js}"></script>
+<script th:src="@{/static/js/vote-details.js}"></script>
+<script th:src="@{/static/js/echarts.js}"></script>
+</html>
