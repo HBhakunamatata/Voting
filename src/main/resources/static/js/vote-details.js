@@ -1,31 +1,40 @@
-let token = $("meta[name='_csrf']").attr("content");
-let header = $("meta[name='_csrf_header']").attr("content");
-let mychart = null
-let colorPan = ['#4587E7','#35AB33','#F5AD1D','#ff7f50','#da70d6','#32cd32','#6495ed']
+const COLOR_PAN = ['#4587E7','#35AB33','#F5AD1D','#ff7f50','#da70d6','#32cd32','#6495ed']
 
-$(document).ajaxSend(function(e, xhr) {
-    xhr.setRequestHeader(header, token);
-});
+$(function () {
+    configCsrfHeaders()
+    let voteChart = initChart()
+    queryAndShowVoteResult()
+    loadChartData(voteChart)
 
-$(document).ready(function () {
+    let endDate = Date.parse($('#countTime time').attr('datetime'))
+    setInterval(countDownTime, 1000, endDate)
 
-    mychart = echarts.init(document.getElementById('vote-chart'))
+    handleResultSubmit()
+})
 
+/**
+ * initialize vote chart
+ * @return voteChart
+ */
+function initChart() {
+    let voteChart = echarts.init(document.getElementById('vote-chart'))
     let option = {
         title: {
             text: 'The percentage for vote items',
         },
         tooltip: {},
         legend: {},
-        xAxis: { type: 'category' },
+        xAxis: {
+            type: 'category'
+        },
         yAxis: {},
         series: [
             {
                 type: 'bar',
                 itemStyle: {
                     color: function (e) {
-                        let index = e.dataIndex % colorPan.length
-                        return colorPan[index]
+                        let index = e.dataIndex % COLOR_PAN.length
+                        return COLOR_PAN[index]
                     }
                 },
                 barWidth: '45%',
@@ -38,24 +47,20 @@ $(document).ready(function () {
             }
         ]
     };
-
-    mychart.setOption(option);
-
+    voteChart.setOption(option);
     window.addEventListener('resize', function () {
-        mychart.resize()
+        voteChart.resize()
     })
+    return voteChart
+}
 
-    let endDate = Date.parse($('#countTime time').attr('datetime'))
-    setInterval(countDownTime, 1000, endDate)
-
-    getAndShowVoteResult()
-    refillChartData()
-})
-
-
+/**
+ * A countdown task for calculate and show vote deadline
+ * @param endDate
+ */
 function countDownTime(endDate) {
     let nowDate = new Date()
-    if (endDate - nowDate <= 0) {
+    if (endDate - nowDate <= 1000) {
         $('.form-check input[type="checkbox"]').each(function () {
             $(this).attr('disabled', true)
         })
@@ -77,18 +82,21 @@ function countDownTime(endDate) {
     }
 }
 
-
-function getAndShowVoteResult() {
+/**
+ * query the vote results and modify the checkbox status
+ *  if answered, disable checkbox and submit button
+ *   and modify the selected checkbox
+ *  if not, leave it alone
+ */
+function queryAndShowVoteResult() {
     let index = location.pathname.lastIndexOf("/") + 1
     let voteId = location.pathname.substring(index)
-    $.getJSON('/vote/' + voteId + '/result', function (data) {
-        // console.log(data)
-        if (Array.isArray(data) && data.length === 0) {
-
-        } else {
-            // 关闭多选和提交按钮  修改选中状态
-            let itemIdList = data.map(item => item.itemId)
-            // console.log(itemIdList)
+    $.getJSON('/vote/' + voteId + '/result', function (voteResults) {
+        if (Array.isArray(voteResults) && voteResults.length === 0) {
+            // leave it alone
+        }
+        else {
+            let itemIdList = voteResults.map(item => item.itemId)
             $('.form-check input[type="checkbox"]').each(function () {
                 let itemId = Number($(this).val())
                 if (itemIdList.indexOf(itemId) !== -1) {
@@ -101,57 +109,62 @@ function getAndShowVoteResult() {
     })
 }
 
+/**
+ * add listener to submit vote results
+ * then rewrite the vote result data and reload chart data
+ */
+function handleResultSubmit() {
+    $('#vote-info').submit(function(e) {
+        e.preventDefault()
+        e.stopPropagation()
 
-$('#vote-info').submit(function(e) {
-    e.preventDefault()
-    e.stopPropagation()
+        let voteId = $('#voteSubject').attr('data')
+        let voteItems = []
 
-    let voteId = $('#voteSubject').attr('data')
-    let voteItems = []
+        $('input[type="checkbox"]').each(function () {
+            if (this.checked) {
+                voteItems.push($(this).val())
+            }
+        })
 
-    $('input[type="checkbox"]').each(function () {
-        if (this.checked) {
-            voteItems.push($(this).val())
-        }
+        let postData = {'voteId': voteId, 'voteItems': voteItems}
+
+        $.ajax({
+            type: "PATCH",
+            url: '/vote/result',
+            data: JSON.stringify(postData),
+            contentType: 'application/json',
+            success: function(data) {
+                queryAndShowVoteResult()
+                loadChartData()
+            }
+        })
     })
+}
 
-    let postData = {'voteId': voteId, 'voteItems': voteItems}
-
-    console.log(JSON.stringify(postData))
-
-    $.ajax({
-        type: "PATCH",
-        url: '/vote/result',
-        data: JSON.stringify(postData),
-        contentType: 'application/json',
-        success: function(data) {
-            console.log(data)
-            getAndShowVoteResult()
-            refillChartData()
-        }
-    })
-})
-
-
-function refillChartData() {
+/**
+ * query vote results and load data into chart
+ * @param voteChart
+ */
+function loadChartData(voteChart) {
     let voteId = $('#voteSubject').attr('data')
 
     $.get('/vote/' + voteId + '/summary', function (data) {
 
         let total = 0
-        let items = []
+        let tags = []
         let summaries = []
 
         for (const i of data) {
-            items.push(i['tag'])
+            tags.push(i['tag'])
             summaries.push(i['summary'])
             total += i['summary']
         }
 
-        mychart.setOption({
+        voteChart.setOption({
             xAxis: {
                 type: 'category',
-                data: items
+                data: tags
             },
             series: [
                 {
@@ -160,8 +173,8 @@ function refillChartData() {
                     barWidth: '45%',
                     itemStyle: {
                         color: function (e) {
-                            let index = e.dataIndex % colorPan.length
-                            return colorPan[index]
+                            let index = e.dataIndex % COLOR_PAN.length
+                            return COLOR_PAN[index]
                         },
                     },
                     label: {
