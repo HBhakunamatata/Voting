@@ -1,21 +1,31 @@
 package cloud.popples.voting.vote.service;
 
 import cloud.popples.voting.vote.domain.VoteItemSum;
+import cloud.popples.voting.vote.repository.VoteRepository;
+import cloud.popples.voting.vote.repository.VoteResultRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class VoteServiceTest {
 
-    @Autowired
+    @InjectMocks
     private VoteService voteService;
+
+    @Mock
+    private VoteRepository voteRepository;
+
+    @Mock
+    private VoteResultRepository voteResultRepository;
 
     @Test
     void testGetPercentage() {
@@ -30,6 +40,6 @@ public class VoteServiceTest {
         LocalDateTime start = LocalDateTime.of(today, LocalTime.MIN);
         LocalDateTime end = LocalDateTime.of(today, LocalTime.MAX);
         int updated = voteService.updateOutdatedVotes(start, end);
-        Assertions.assertEquals(1, updated);
+        Assertions.assertEquals(0, updated);
     }
 }

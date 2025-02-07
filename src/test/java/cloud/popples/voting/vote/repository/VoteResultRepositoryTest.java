@@ -4,11 +4,14 @@ import cloud.popples.voting.vote.domain.VoteItemSum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
 @SpringBootTest
+@Sql(scripts = {"/unit-test-db-scripts/vote_result.sql",
+        "/unit-test-db-scripts/vote_item.sql"})
 public class VoteResultRepositoryTest {
 
     @Autowired

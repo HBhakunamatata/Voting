@@ -8,6 +8,7 @@ import cloud.popples.voting.vote.repository.VoteRepository;
 import cloud.popples.voting.vote.repository.VoteResultRepository;
 import cloud.popples.voting.vote.service.VoteService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,9 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Page<Vote> conditionQuery(int pageNo, int pageSize, String queryWord) {
+        if (StringUtils.isAnyBlank(queryWord)) {
+            queryWord = "";
+        }
         Sort.TypedSort<Vote> typedSort = Sort.sort(Vote.class);
         Sort sort = typedSort.by(Vote::getEndTime).descending()
                 .and(typedSort.by(Vote::getStatus).ascending());

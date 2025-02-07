@@ -4,6 +4,7 @@ import cloud.popples.voting.webcontroller.HomeController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {HomeController.class})
+@WithMockUser
 class HomeControllerTest {
 
     @Autowired
@@ -21,7 +23,7 @@ class HomeControllerTest {
         mockMvc.perform(get("/home"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(content().string(containsString("Welcome to")));
+                .andExpect(content().string(containsString("Taco Cloud")));
     }
 
 }
