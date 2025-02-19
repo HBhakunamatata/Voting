@@ -14,11 +14,12 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Sql(scripts = {"/unit-test-db-scripts/vote.sql"})
-public class VoteRepositoryTest {
+class VoteRepositoryTest {
     @Autowired
     private VoteRepository voteRepository;
 

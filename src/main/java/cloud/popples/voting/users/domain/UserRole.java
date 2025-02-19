@@ -1,19 +1,22 @@
 package cloud.popples.voting.users.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "role")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor(force = true)
 @SuperBuilder
 public class UserRole extends BaseAuthEntity implements GrantedAuthority {
@@ -40,4 +43,20 @@ public class UserRole extends BaseAuthEntity implements GrantedAuthority {
         return this.authority;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserRole userRole = (UserRole) o;
+        return Objects.equals(id, userRole.id) && Objects.equals(authority, userRole.authority);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, authority);
+    }
 }

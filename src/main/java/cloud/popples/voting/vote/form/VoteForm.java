@@ -2,11 +2,12 @@ package cloud.popples.voting.vote.form;
 
 import cloud.popples.voting.vote.domain.Vote;
 import cloud.popples.voting.vote.domain.VoteItem;
-import cloud.popples.voting.vote.domain.VoteItemForm;
 import cloud.popples.voting.vote.domain.VoteStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 
 import static cloud.popples.voting.utils.DateTimeUtil.DEFAULT_DATETIME_FORMAT;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@ToString
 public class VoteForm {
 
     @NotNull
@@ -38,15 +41,13 @@ public class VoteForm {
                 .map(itemForm -> new VoteItem(itemForm.getTag(), itemForm.getContent()))
                 .collect(Collectors.toList());
 
-        Vote vote = Vote.builder()
+        return Vote.builder()
                 .subject(this.voteSubject)
                 .voteItems(voteItems)
                 .status(VoteStatus.GOING)
                 .startTime(LocalDateTime.now())
                 .endTime(endTime)
                 .build();
-
-        return vote;
     }
 
 }

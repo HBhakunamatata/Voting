@@ -1,9 +1,9 @@
 package cloud.popples.voting.vote.forms;
 
 import cloud.popples.voting.vote.domain.Vote;
-import cloud.popples.voting.vote.domain.VoteItemForm;
 import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.form.VoteForm;
+import cloud.popples.voting.vote.form.VoteItemForm;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VoteFormTest {
+class VoteFormTest {
 
     @Test
-    public void givenVoteFormThenReturnVote() {
+    void givenVoteFormThenReturnVote() {
         // prepare
         String expectedSubject = "testSubject";
         String expectedTag = "A";

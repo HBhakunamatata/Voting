@@ -3,19 +3,18 @@ package cloud.popples.voting.users.param;
 import cloud.popples.voting.users.domain.UserInfo;
 import cloud.popples.voting.users.domain.UserRole;
 import com.google.common.collect.Sets;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class RegisterForm {
 
     @NotNull
@@ -40,4 +39,23 @@ public class RegisterForm {
                 .build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RegisterForm that = (RegisterForm) o;
+        return Objects.equals(username, that.username)
+                && Objects.equals(password, that.password)
+                && Objects.equals(email, that.email)
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password, email, name);
+    }
 }

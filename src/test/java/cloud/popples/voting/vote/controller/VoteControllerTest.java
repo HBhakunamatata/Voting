@@ -3,9 +3,9 @@ package cloud.popples.voting.vote.controller;
 import cloud.popples.voting.utils.TestUtils;
 import cloud.popples.voting.vote.domain.Vote;
 import cloud.popples.voting.vote.domain.VoteItem;
-import cloud.popples.voting.vote.domain.VoteItemForm;
 import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.form.VoteForm;
+import cloud.popples.voting.vote.form.VoteItemForm;
 import cloud.popples.voting.vote.service.VoteService;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {VoteController.class})
-public class VoteControllerTest {
+class VoteControllerTest {
 
     @Autowired
     private MockMvc mvc;

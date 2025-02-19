@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class TestUtils {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static String mapToString(Object object) throws JsonProcessingException {
         objectMapper.registerModule(new JavaTimeModule());

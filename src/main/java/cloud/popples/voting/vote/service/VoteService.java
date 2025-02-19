@@ -4,8 +4,8 @@ import cloud.popples.voting.users.domain.UserInfo;
 import cloud.popples.voting.vote.domain.Vote;
 import cloud.popples.voting.vote.domain.VoteItemSum;
 import cloud.popples.voting.vote.domain.VoteResult;
-import cloud.popples.voting.vote.domain.VoteResultForm;
 import cloud.popples.voting.vote.form.VoteForm;
+import cloud.popples.voting.vote.form.VoteResultForm;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;

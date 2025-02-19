@@ -1,9 +1,14 @@
 package cloud.popples.voting.vote.service.impl;
 
 import cloud.popples.voting.users.domain.UserInfo;
-import cloud.popples.voting.vote.domain.*;
+import cloud.popples.voting.vote.domain.Vote;
+import cloud.popples.voting.vote.domain.VoteItemSum;
+import cloud.popples.voting.vote.domain.VoteResult;
+import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.exception.OperationNotAllowException;
+import cloud.popples.voting.vote.exception.VoteNotFoundException;
 import cloud.popples.voting.vote.form.VoteForm;
+import cloud.popples.voting.vote.form.VoteResultForm;
 import cloud.popples.voting.vote.repository.VoteRepository;
 import cloud.popples.voting.vote.repository.VoteResultRepository;
 import cloud.popples.voting.vote.service.VoteService;
@@ -33,7 +38,6 @@ public class VoteServiceImpl implements VoteService {
         this.resultRepository = resultRepository;
     }
 
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Vote saveVote(VoteForm voteForm) {
@@ -42,55 +46,77 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Page<Vote> conditionQuery(int pageNo, int pageSize, String queryWord) {
-        if (StringUtils.isAnyBlank(queryWord)) {
-            queryWord = "";
-        }
-        Sort.TypedSort<Vote> typedSort = Sort.sort(Vote.class);
-        Sort sort = typedSort.by(Vote::getEndTime).descending()
-                .and(typedSort.by(Vote::getStatus).ascending());
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
-        Page<Vote> votes = voteRepository
+    public Page<Vote> conditionQuery(int pageNo, int pageSize, String queryStr) {
+        final String queryWord = queryWord(queryStr);
+        final PageRequest pageRequest = votePageRequest(pageNo, pageSize);
+        return voteRepository
                 .findBySubjectContainsIgnoreCase(queryWord, pageRequest);
-        return votes;
+    }
+
+    private String queryWord(String query) {
+        return StringUtils.isBlank(query) ? "" : query.trim();
+    }
+
+    /**
+     * get votes sorted by endTime descending and status ascending
+     * @return Sort
+     */
+    private Sort voteSort() {
+        final Sort.TypedSort<Vote> typedSort = Sort.sort(Vote.class);
+        return typedSort.by(Vote::getEndTime).descending()
+                .and(typedSort.by(Vote::getStatus).ascending());
+    }
+
+    /**
+     * create pageRequest with sort and page info
+     * @param pageNo
+     * @param pageSize
+     * @return pageRequest
+     */
+    private PageRequest votePageRequest(int pageNo, int pageSize) {
+        final Sort sort = voteSort();
+        return PageRequest.of(pageNo, pageSize, sort);
     }
 
     @Override
     public Vote getVoteDetails(Long voteId) {
-        return voteRepository.findById(voteId).orElse(null);
+        return voteRepository.findById(voteId).orElseThrow(VoteNotFoundException::new);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
     public List<VoteResult> saveVoteResults(VoteResultForm voteResultForm, UserInfo userInfo) {
-        long voteId = Long.parseLong(voteResultForm.getVoteId());
-        Vote vote = voteRepository.getReferenceById(voteId);
-
-        LocalDateTime now = LocalDateTime.now();
-        if (vote.getEndTime().isBefore(now) || vote.getStatus().equals(VoteStatus.END)) {
-            throw new OperationNotAllowException();
-        }
-
-        List<VoteResult> voteResult = getUserVoteResult(voteResultForm.getVoteId(), userInfo);
-        if (CollectionUtils.isNotEmpty(voteResult)) {
+        final long voteId = Long.parseLong(voteResultForm.getVoteId());
+        if (!isVoteOpen(voteId, userInfo)) {
             throw new OperationNotAllowException();
         }
         List<VoteResult> voteResults = voteResultForm.toVoteResults();
         return resultRepository.saveAll(voteResults);
     }
 
+    private boolean checkUserVoted(long voteId, UserInfo userInfo) {
+        List<VoteResult> userVoteResult = getUserVoteResult("" + voteId, userInfo);
+        return CollectionUtils.isNotEmpty(userVoteResult);
+    }
+
+    private boolean checkVoteNotEnd(long voteId) {
+        final Vote vote = voteRepository.getReferenceById(voteId);
+        return vote.notEnd();
+    }
+
+    private boolean isVoteOpen(long voteId, UserInfo userInfo) {
+        return !checkUserVoted(voteId, userInfo) && checkVoteNotEnd(voteId);
+    }
+
     @Override
     public List<VoteResult> getUserVoteResult(String voteId, UserInfo userInfo) {
-        List<VoteResult> voteResults = resultRepository.getByVoteIdAndCreator(
+        return resultRepository.getByVoteIdAndCreator(
                 Long.parseLong(voteId), userInfo.getId());
-        return voteResults;
     }
 
     @Override
     public List<VoteItemSum> resultSummary(String voteId) {
-        List<VoteItemSum> summaryList =
-                resultRepository.countTagsByVoteId(Long.parseLong(voteId));
-        return summaryList;
+        return resultRepository.countTagsByVoteId(Long.parseLong(voteId));
     }
 
     @Override
@@ -98,6 +124,5 @@ public class VoteServiceImpl implements VoteService {
     public int updateOutdatedVotes(LocalDateTime start, LocalDateTime end) {
         return voteRepository.updateStatusByEndTimeBetween(VoteStatus.END, start, end);
     }
-
 
 }

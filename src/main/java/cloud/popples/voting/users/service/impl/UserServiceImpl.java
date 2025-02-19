@@ -1,16 +1,19 @@
-package cloud.popples.voting.users.service;
+package cloud.popples.voting.users.service.impl;
 
 import cloud.popples.voting.users.domain.UserInfo;
 import cloud.popples.voting.users.domain.UserRole;
 import cloud.popples.voting.users.param.RegisterForm;
 import cloud.popples.voting.users.repository.UserInfoRepository;
 import cloud.popples.voting.users.repository.UserRoleRepository;
+import cloud.popples.voting.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -32,19 +35,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserInfo userInfo = userInfoRepository.findByUsername(username);
-        if (userInfo == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return userInfoRepository.findByUsername(username);
+        Optional<UserInfo> userInfo = userInfoRepository.findByUsername(username);
+        return userInfo.orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override
     public UserInfo registerUser(RegisterForm registerForm) {
-        UserRole userRole = configureUserRole(registerForm);
-        UserInfo userInfo = registerForm.toUserInfo(passwordEncoder, userRole);
-        UserInfo saved = userInfoRepository.save(userInfo);
-        return saved;
+        final UserRole userRole = configDefaultRole(registerForm);
+        final UserInfo userInfo = registerForm.toUserInfo(passwordEncoder, userRole);
+        return userInfoRepository.save(userInfo);
     }
 
     @Override
@@ -53,11 +52,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-    private UserRole configureUserRole(RegisterForm registerForm) {
-        UserRole roleUser = userRoleRepository.findByAuthority("ROLE_USER");
-        if (roleUser == null) {
-            roleUser = new UserRole("ROLE_USER");
-        }
-        return roleUser;
+    private UserRole configDefaultRole(RegisterForm registerForm) {
+        Optional<UserRole> roleUser = userRoleRepository.findByAuthority("ROLE_USER");
+        return roleUser.orElse(new UserRole("ROLE_USER"));
     }
+
 }

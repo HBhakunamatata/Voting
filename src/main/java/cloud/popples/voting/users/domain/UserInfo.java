@@ -1,9 +1,6 @@
 package cloud.popples.voting.users.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,11 +9,11 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "user_info")
 @NoArgsConstructor(force = true)
@@ -44,6 +41,7 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
                     @JoinColumn(name = "user_id", table = "user",
                             foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
             })
+    @ToString.Exclude
     private final Set<? extends GrantedAuthority> authorities;
 
 
@@ -55,15 +53,11 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
         this.name = name;
         this.email = email;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
-
-        LocalDateTime now = LocalDateTime.now();
-        this.createTime = now;
-        this.updateTime = now;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.unmodifiableSet(authorities);
     }
 
     @Override
@@ -96,6 +90,28 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserInfo userInfo = (UserInfo) o;
+        return Objects.equals(id, userInfo.id)
+                && Objects.equals(username, userInfo.username)
+                && Objects.equals(password, userInfo.password)
+                && Objects.equals(name, userInfo.name)
+                && Objects.equals(email, userInfo.email)
+                && Objects.equals(authorities, userInfo.authorities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, name, email, authorities);
+    }
+
     private static SortedSet<? extends GrantedAuthority> sortAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Assert.notEmpty(authorities, "Cannot pass an empty GrantedAuthority collection");
         SortedSet<GrantedAuthority> sortedAuthorities = new TreeSet<>(new AuthorityComparator());
@@ -103,7 +119,7 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
         return sortedAuthorities;
     }
 
-    private static class AuthorityComparator implements Comparator<GrantedAuthority>, Serializable {
+    private static final class AuthorityComparator implements Comparator<GrantedAuthority>, Serializable {
 
         private static final Long serialVersionUID = 1L;
 

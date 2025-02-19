@@ -5,9 +5,8 @@ import cloud.popples.voting.users.domain.UserInfo;
 import cloud.popples.voting.vote.domain.Vote;
 import cloud.popples.voting.vote.domain.VoteItemSum;
 import cloud.popples.voting.vote.domain.VoteResult;
-import cloud.popples.voting.vote.domain.VoteResultForm;
-import cloud.popples.voting.vote.exception.VoteNotFoundException;
 import cloud.popples.voting.vote.form.VoteForm;
+import cloud.popples.voting.vote.form.VoteResultForm;
 import cloud.popples.voting.vote.service.VoteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,7 @@ public class VoteController {
     @PostMapping("/vote")
     @ResponseBody
     public Vote save(@Valid @RequestBody VoteForm voteForm) throws JsonProcessingException {
-        Vote savedVote = voteService.saveVote(voteForm);
-        return savedVote;
+        return voteService.saveVote(voteForm);
     }
 
     @GetMapping("/votes")
@@ -53,9 +51,6 @@ public class VoteController {
     @GetMapping("/vote/{voteId}")
     public String voteDetails(@PathVariable("voteId") Long voteId, Model model) {
         Vote voteDetails = voteService.getVoteDetails(voteId);
-        if (voteDetails == null) {
-            throw new VoteNotFoundException();
-        }
         model.addAttribute("voteData", voteDetails);
         return "vote-details";
     }
@@ -67,8 +62,7 @@ public class VoteController {
     public List<VoteResult> saveVoteResults(
             @RequestBody VoteResultForm voteResultForm,
             @AuthenticationPrincipal UserInfo userInfo) {
-        List<VoteResult> results = voteService.saveVoteResults(voteResultForm, userInfo);
-        return results;
+        return voteService.saveVoteResults(voteResultForm, userInfo);
     }
 
 
@@ -76,16 +70,14 @@ public class VoteController {
     @ResponseBody
     public List<VoteResult> getUserVoteResults(
             @PathVariable String voteId, @AuthenticationPrincipal UserInfo userInfo) {
-        List<VoteResult> userVoteResult = voteService.getUserVoteResult(voteId, userInfo);
-        return userVoteResult;
+        return voteService.getUserVoteResult(voteId, userInfo);
     }
 
 
     @GetMapping("/vote/{voteId}/summary")
     @ResponseBody
     public List<VoteItemSum> resultSummery(@PathVariable String voteId) {
-        List<VoteItemSum> resultSummary = voteService.resultSummary(voteId);
-        return resultSummary;
+        return voteService.resultSummary(voteId);
     }
 
 

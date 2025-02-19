@@ -5,6 +5,7 @@ import cloud.popples.voting.users.domain.UserRole;
 import cloud.popples.voting.users.param.RegisterForm;
 import cloud.popples.voting.users.repository.UserInfoRepository;
 import cloud.popples.voting.users.repository.UserRoleRepository;
+import cloud.popples.voting.users.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

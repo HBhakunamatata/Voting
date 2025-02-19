@@ -9,10 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {AuthController.class})
-public class AuthControllerTest {
+class AuthControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -31,14 +28,14 @@ public class AuthControllerTest {
     private UserService userService;
 
     @Test
-    public void whenInvalidUserLoginThen401() throws Exception {
+    void whenInvalidUserLoginThen401() throws Exception {
         mvc.perform(get("/auth/login"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     @WithMockUser
-    public void whenRoleUserLoginThenGetWebPage() throws Exception {
+    void whenRoleUserLoginThenGetWebPage() throws Exception {
         mvc.perform(get("/auth/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));
@@ -46,7 +43,7 @@ public class AuthControllerTest {
 
     @Test
     @WithMockUser
-    public void whenRoleUserRegisterThenGetWebPage() throws Exception {
+    void whenRoleUserRegisterThenGetWebPage() throws Exception {
         mvc.perform(get("/auth/register"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"));
@@ -54,7 +51,7 @@ public class AuthControllerTest {
 
     @Test
     @WithMockUser
-    public void whenUserRegisterThenRegistered() throws Exception {
+    void whenUserRegisterThenRegistered() throws Exception {
         Map<String, String> registerForm = new LinkedHashMap<>();
         registerForm.put("username", "testusername");
         registerForm.put("password", "testusername");
