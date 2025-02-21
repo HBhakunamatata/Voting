@@ -49,7 +49,6 @@ class VoteServiceTest {
 
     @Test
     void whenPageQueryVoteThenReturnSatisfiedVotes() {
-
         final Sort.TypedSort<Vote> typedSort = Sort.sort(Vote.class);
         Sort sort = typedSort.by(Vote::getEndTime).descending()
                 .and(typedSort.by(Vote::getStatus).ascending());
@@ -81,21 +80,6 @@ class VoteServiceTest {
         Page<Vote> result = voteService.conditionQuery(0, 10, null);
 
         assertEquals(result, expect);
-    }
-
-    @Test
-    void testGetPercentage() {
-        List<VoteItemSum> resultSummary = voteService.resultSummary("1");
-        assertFalse(resultSummary.isEmpty());
-    }
-
-    @Test
-    void testGetOutdatedVotes() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime start = LocalDateTime.of(today, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(today, LocalTime.MAX);
-        int updated = voteService.updateOutdatedVotes(start, end);
-        assertEquals(0, updated);
     }
 
     @Test

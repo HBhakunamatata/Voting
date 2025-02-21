@@ -16,9 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -70,9 +73,9 @@ class UserServiceTest {
                 .updateTime(time)
                 .build();
 
-        given(userRoleRepository.findByAuthority("ROLE_USER")).willReturn(userRole);
-        given(userInfoRepository.save(unsavedUser)).willReturn(savedUser);
-        given(passwordEncoder.encode(expectPassword)).willReturn(expectPassword);
+        when(userRoleRepository.findByAuthority("ROLE_USER")).thenReturn(Optional.of(userRole));
+        when(userInfoRepository.save(isA(UserInfo.class))).thenReturn(savedUser);
+        when(passwordEncoder.encode(expectPassword)).thenReturn(expectPassword);
 
         // Input Data
         RegisterForm registerForm = new RegisterForm();

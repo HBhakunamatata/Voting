@@ -31,13 +31,13 @@ public class UserInfo extends BaseAuthEntity implements UserDetails {
     private final String name;
     private final String email;
 
-    @ManyToMany(cascade = CascadeType.ALL, targetEntity = UserRole.class)
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = UserRole.class, fetch = FetchType.EAGER)
     @JoinTable(name = "relation_user_role",
-            joinColumns = {
+            inverseJoinColumns = {
                     @JoinColumn(name = "role_id", table = "user_role",
                             foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
             },
-            inverseJoinColumns = {
+            joinColumns = {
                     @JoinColumn(name = "user_id", table = "user",
                             foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
             })

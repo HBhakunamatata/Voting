@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.instancio.Select.field;
@@ -40,14 +41,18 @@ class UserInfoRepositoryTest {
     private PasswordEncoder passwordEncoder;
 
     GrantedAuthority roleUser;
-    GrantedAuthority roleAdmin;
 
     private final static String USER_PASSWORD = "123456";
 
     @BeforeEach
     void before() {
-        roleUser = new UserRole("ROLE_USER");
-        roleAdmin = new UserRole("ROLE_ADMIN");
+        LocalDateTime createTime = LocalDateTime.of(2024, 11, 8, 18, 30, 1);
+        roleUser = UserRole.builder()
+                .updateTime(createTime)
+                .createTime(createTime)
+                .id(1L)
+                .authority("ROLE_USER")
+                .build();
     }
 
     @TestFactory
@@ -57,7 +62,6 @@ class UserInfoRepositoryTest {
     Iterable<DynamicTest> testSaveUserInfo() {
         Set<GrantedAuthority> authorities = Sets.newHashSet();
         authorities.add(roleUser);
-        authorities.add(roleAdmin);
 
         when(passwordEncoder.encode(USER_PASSWORD)).thenReturn(USER_PASSWORD);
 
@@ -82,15 +86,18 @@ class UserInfoRepositoryTest {
     @Test
     @Transactional
     @Rollback
-    @Sql(scripts = "/unit-test-db-scripts/user_info.sql")
+    @Sql(scripts = {"/unit-test-db-scripts/user_info.sql", "/unit-test-db-scripts/role.sql", "/unit-test-db-scripts/relation_user_role.sql"})
     void whenFindUserInfoByLegalUsernameThenReturnUserInfo() throws Exception {
         String existedUserName = "test01";
         when(passwordEncoder.encode(USER_PASSWORD)).thenReturn(USER_PASSWORD);
 
-        UserInfo result = userInfoRepository.findByUsername(existedUserName);
-
+        Optional<UserInfo> optional = userInfoRepository.findByUsername(existedUserName);
         UserInfo expected = mockExistedUserInfo();
-        assertEquals(TestUtils.mapToString(result), TestUtils.mapToString(expected));
+
+        assertAll(
+                () -> assertTrue(optional.isPresent()),
+                () -> assertEquals(TestUtils.mapToString(expected), TestUtils.mapToString(optional.get()))
+        );
     }
 
     private UserInfo mockExistedUserInfo() {
@@ -111,8 +118,8 @@ class UserInfoRepositoryTest {
     @Sql(scripts = "/unit-test-db-scripts/user_info.sql")
     void whenFindNonExistentUserInfoThenThrowException() {
         String nonExistedUserName = "fake_name";
-        UserInfo userInfo = userInfoRepository.findByUsername(nonExistedUserName);
-        assertNull(userInfo);
+        Optional<UserInfo> optional = userInfoRepository.findByUsername(nonExistedUserName);
+        assertFalse(optional.isPresent());
     }
 
 }
