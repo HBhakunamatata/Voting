@@ -6,13 +6,13 @@ import cloud.popples.voting.users.param.RegisterForm;
 import cloud.popples.voting.users.repository.UserInfoRepository;
 import cloud.popples.voting.users.repository.UserRoleRepository;
 import cloud.popples.voting.users.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,28 +37,13 @@ class UserServiceTest {
     @Mock
     private UserRoleRepository userRoleRepository;
 
-    private UserRole userRole;
-
-    @BeforeEach
-    void setUp() {
-        userRole = new UserRole("ROLE_USER");
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
+    private final UserRole userRole = new UserRole("ROLE_USER");
 
     @Test
     void givenUserInfoThenRegistered() {
         String expectUserName = "test";
         String expectPassword = "test";
         String expectEmail = "test@test.com";
-
-        UserInfo unsavedUser = UserInfo.builder()
-                .username(expectUserName)
-                .password(expectPassword)
-                .email(expectEmail)
-                .build();
 
         LocalDateTime time = LocalDateTime.of(2024, 11, 10, 0, 0, 0);
 
@@ -91,5 +75,40 @@ class UserServiceTest {
                 () -> assertEquals(expectedUser.getEmail(), expectEmail),
                 () -> assertEquals(expectedUser.getName(), expectUserName)
         );
+    }
+
+    @Test
+    void whenFindUserByNameThenReturn() {
+        String expectUserName = "test";
+        String expectPassword = "test";
+        String expectEmail = "test@test.com";
+
+        LocalDateTime time = LocalDateTime.of(2024, 11, 10, 0, 0, 0);
+
+        UserInfo existedUser = UserInfo.builder()
+                .id(1L)
+                .username(expectUserName)
+                .password(expectPassword)
+                .name(expectUserName)
+                .email(expectEmail)
+                .createTime(time)
+                .updateTime(time)
+                .build();
+
+        when(userInfoRepository.findByUsername(expectUserName)).thenReturn(Optional.of(existedUser));
+
+        UserDetails userDetails = userService.loadUserByUsername(expectUserName);
+        assertAll(
+                () -> assertNotNull(userDetails),
+                () -> assertEquals(userDetails.getUsername(), expectUserName),
+                () -> assertEquals(userDetails.getPassword(), expectPassword)
+        );
+    }
+
+    @Test
+    void whenFindUserByInvalidNameThenThrowNotFoundException() {
+        String expectUserName = "test";
+        when(userInfoRepository.findByUsername(expectUserName)).thenReturn(Optional.empty());
+        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername(expectUserName));
     }
 }

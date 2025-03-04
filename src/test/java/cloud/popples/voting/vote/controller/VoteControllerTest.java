@@ -7,24 +7,18 @@ import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.form.VoteForm;
 import cloud.popples.voting.vote.form.VoteItemForm;
 import cloud.popples.voting.vote.service.VoteService;
-import cloud.popples.voting.vote.service.impl.VoteServiceImpl;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,9 +60,7 @@ class VoteControllerTest {
                 .status(VoteStatus.GOING)
                 .voteItems(Lists.newArrayList(voteItem))
                 .build();
-//        when(voteService.saveVote(voteForm)).thenReturn(vote);
         when(voteService.saveVote(isA(VoteForm.class))).thenReturn(vote);
-//        doReturn(vote).when(voteService).saveVote(isA(VoteForm.class));
 
         mvc.perform(post("/vote")
                 .with(csrf())

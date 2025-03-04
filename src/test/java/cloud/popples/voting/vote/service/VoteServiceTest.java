@@ -3,7 +3,6 @@ package cloud.popples.voting.vote.service;
 import cloud.popples.voting.users.domain.UserInfo;
 import cloud.popples.voting.users.domain.UserRole;
 import cloud.popples.voting.vote.domain.Vote;
-import cloud.popples.voting.vote.domain.VoteItemSum;
 import cloud.popples.voting.vote.domain.VoteResult;
 import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.form.VoteResultForm;
@@ -24,14 +23,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 

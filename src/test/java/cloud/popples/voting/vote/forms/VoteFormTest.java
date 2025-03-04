@@ -16,18 +16,19 @@ class VoteFormTest {
     @Test
     void givenVoteFormThenReturnVote() {
         // prepare
-        String expectedSubject = "testSubject";
         String expectedTag = "A";
         String expectedContent = "contentA";
 
-        VoteForm voteForm = new VoteForm();
-        voteForm.setVoteSubject(expectedSubject);
         VoteItemForm voteItemForm = new VoteItemForm();
         voteItemForm.setTag(expectedTag);
         voteItemForm.setContent(expectedContent);
-        voteForm.setVoteItemForms(Lists.newArrayList(voteItemForm));
 
+        String expectedSubject = "testSubject";
         LocalDateTime endTime = LocalDateTime.of(2024, 11, 10, 0,0,0);
+
+        VoteForm voteForm = new VoteForm();
+        voteForm.setVoteSubject(expectedSubject);
+        voteForm.setVoteItemForms(Lists.newArrayList(voteItemForm));
         voteForm.setEndTime(endTime);
 
         // action
