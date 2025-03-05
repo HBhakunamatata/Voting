@@ -49,7 +49,7 @@ class VoteRepositoryTest {
     }
 
     @Test
-    void whenFindNotFinishedVotesBetweenTimesThenReturn() {
+    void whenUpdateNotFinishedVotesBetweenTimesThenReturn() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 10, 0, 0, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 10, 23, 59, 59);
 

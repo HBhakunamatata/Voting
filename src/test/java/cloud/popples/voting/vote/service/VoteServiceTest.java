@@ -1,17 +1,9 @@
 package cloud.popples.voting.vote.service;
 
-import cloud.popples.voting.users.domain.UserInfo;
-import cloud.popples.voting.users.domain.UserRole;
 import cloud.popples.voting.vote.domain.Vote;
-import cloud.popples.voting.vote.domain.VoteResult;
-import cloud.popples.voting.vote.domain.VoteStatus;
-import cloud.popples.voting.vote.form.VoteResultForm;
 import cloud.popples.voting.vote.repository.VoteRepository;
 import cloud.popples.voting.vote.repository.VoteResultRepository;
 import cloud.popples.voting.vote.service.impl.VoteServiceImpl;
-import org.apache.commons.collections4.CollectionUtils;
-import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +15,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
-import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +47,7 @@ class VoteServiceTest {
 
         Page<Vote> result = voteService.conditionQuery(0, 10, queryWord);
 
-        assertEquals(result, expect);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -77,59 +64,9 @@ class VoteServiceTest {
 
         Page<Vote> result = voteService.conditionQuery(0, 10, null);
 
-        assertEquals(result, expect);
+        assertEquals(expect, result);
     }
 
-    @Test
-    void whenSaveVoteResultThenReturnSavedVoteResult() {
-        String voteId = "1";
-        String itemId_2 = "2";
-        String itemId_3 = "3";
-        VoteResultForm voteResultForm = new VoteResultForm();
-        voteResultForm.setVoteId(voteId);
-        voteResultForm.setVoteItems(Lists.newArrayList(itemId_2, itemId_3));
 
-        UserRole userRole = new UserRole("ROLE_USER");
-        UserInfo userInfo = Instancio.of(UserInfo.class)
-                .set(field(UserInfo::getId), 1L)
-                .set(field(UserInfo::getAuthorities), Sets.newLinkedHashSet(userRole))
-                .create();
-
-        Vote expectedVote = Instancio.of(Vote.class)
-                .set(field(Vote::getId), Long.parseLong(voteId))
-                .set(field(Vote::getStatus), VoteStatus.GOING)
-                .set(field(Vote::getEndTime), LocalDateTime.of(2099, 1, 1, 0,0,0))
-                .create();
-        List<VoteResult> unsavedResults = voteResultForm.toVoteResults();
-        List<VoteResult> expectedResults = Instancio.ofList(VoteResult.class)
-                .size(2)
-                .set(field(VoteResult::getVoteId), Long.parseLong(voteId))
-                .create();
-
-        when(voteRepository.getReferenceById(Long.parseLong(voteId)))
-                .thenReturn(expectedVote);
-        when(resultRepository.getByVoteIdAndCreator(Long.parseLong(voteId), userInfo.getId()))
-                .thenReturn(Collections.emptyList());
-        lenient().when(resultRepository.saveAll(unsavedResults))
-                .thenReturn(expectedResults);
-
-        List<VoteResult> voteResults = voteService.saveVoteResults(voteResultForm, userInfo);
-        assertTrue(CollectionUtils.isNotEmpty(voteResults));
-    }
-
-    @Test
-    void whenGetUserVoteResultThenReturnSavedVoteResult() {
-        String voteId = "1";
-        UserInfo userInfo = Instancio.of(UserInfo.class)
-                .set(field(UserInfo::getId), 1L)
-                .create();
-        List<VoteResult> expectedResults = Instancio.ofList(VoteResult.class).create();
-
-        when(resultRepository.getByVoteIdAndCreator(Long.parseLong(voteId), userInfo.getId()))
-                .thenReturn(expectedResults);
-
-        List<VoteResult> userVoteResult = voteService.getUserVoteResult(voteId, userInfo);
-        assertTrue(CollectionUtils.isNotEmpty(userVoteResult));
-    }
 
 }

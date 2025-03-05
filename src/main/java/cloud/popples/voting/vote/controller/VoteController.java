@@ -7,6 +7,7 @@ import cloud.popples.voting.vote.domain.VoteItemSum;
 import cloud.popples.voting.vote.domain.VoteResult;
 import cloud.popples.voting.vote.form.VoteForm;
 import cloud.popples.voting.vote.form.VoteResultForm;
+import cloud.popples.voting.vote.service.VoteResultService;
 import cloud.popples.voting.vote.service.VoteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,12 @@ public class VoteController {
 
     private final VoteService voteService;
 
+    private final VoteResultService voteResultService;
+
     @Autowired
-    public VoteController(VoteService voteService) {
+    public VoteController(VoteService voteService, VoteResultService voteResultService) {
         this.voteService = voteService;
+        this.voteResultService = voteResultService;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,29 +59,26 @@ public class VoteController {
         return "vote-details";
     }
 
-
     @PatchMapping("/vote/result")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public List<VoteResult> saveVoteResults(
             @RequestBody VoteResultForm voteResultForm,
             @AuthenticationPrincipal UserInfo userInfo) {
-        return voteService.saveVoteResults(voteResultForm, userInfo);
+        return voteResultService.saveVoteResults(voteResultForm, userInfo);
     }
-
 
     @GetMapping("/vote/{voteId}/result")
     @ResponseBody
     public List<VoteResult> getUserVoteResults(
             @PathVariable String voteId, @AuthenticationPrincipal UserInfo userInfo) {
-        return voteService.getUserVoteResult(voteId, userInfo);
+        return voteResultService.getUserVoteResult(voteId, userInfo);
     }
-
 
     @GetMapping("/vote/{voteId}/summary")
     @ResponseBody
     public List<VoteItemSum> resultSummery(@PathVariable String voteId) {
-        return voteService.resultSummary(voteId);
+        return voteResultService.resultSummary(voteId);
     }
 
 

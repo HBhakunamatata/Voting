@@ -6,6 +6,7 @@ import cloud.popples.voting.vote.domain.VoteItem;
 import cloud.popples.voting.vote.domain.VoteStatus;
 import cloud.popples.voting.vote.form.VoteForm;
 import cloud.popples.voting.vote.form.VoteItemForm;
+import cloud.popples.voting.vote.service.VoteResultService;
 import cloud.popples.voting.vote.service.VoteService;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ class VoteControllerTest {
 
     @MockBean
     private VoteService voteService;
+
+    @MockBean
+    private VoteResultService voteResultService;
 
     @Test
     @WithMockUser
